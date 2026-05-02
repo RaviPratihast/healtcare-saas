@@ -12,6 +12,14 @@ dist
 dist-ssr
 *.local
 
+# Secrets and local env (never commit real keys)
+.env
+.env.*
+.env.example
+
+# Tooling / nested worktrees (not part of this repo)
+.claude/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
