@@ -1,3 +1,6 @@
+/**
+ * Route-level code splitting: every page is `lazy()`-loaded so chunks download on first navigation.
+ */
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { useAuth } from '@/features/auth/hooks/useAuth'

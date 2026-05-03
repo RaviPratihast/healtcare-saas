@@ -1,10 +1,20 @@
+import { useMemo } from 'react'
 import { PatientCard } from '@/features/patients/components/PatientCard'
 import { PatientRow } from '@/features/patients/components/PatientRow'
 import { ViewToggle } from '@/features/patients/components/ViewToggle'
-import { usePatients } from '@/features/patients/hooks/usePatients'
+import { usePatientsStore } from '@/features/patients/store/patientsStore'
 
 export default function PatientDetailsPage() {
-  const { filtered, viewMode, searchQuery, setSearchQuery, patients } = usePatients()
+  const patients = usePatientsStore((s) => s.patients)
+  const viewMode = usePatientsStore((s) => s.viewMode)
+  const searchQuery = usePatientsStore((s) => s.searchQuery)
+  const setSearchQuery = usePatientsStore((s) => s.setSearchQuery)
+
+  const filtered = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase()
+    if (!q) return patients
+    return patients.filter((p) => p.name.toLowerCase().includes(q))
+  }, [patients, searchQuery])
 
   return (
     <div className="space-y-6">
