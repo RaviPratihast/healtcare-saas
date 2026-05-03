@@ -98,6 +98,7 @@ export function useAuth() {
     setError(null)
     try {
       await signInAnonymously(auth)
+      await triggerLoginNotification('Guest')
       navigate('/dashboard')
     } catch (err) {
       setError(resolveFirebaseError((err as AuthError).code))
