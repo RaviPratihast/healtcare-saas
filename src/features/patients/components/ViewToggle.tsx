@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { usePatientsStore } from '@/features/patients/store/patientsStore'
 import type { PatientsViewMode } from '@/features/patients/store/patientsStore'
 import { cn } from '@/shared/utils/cn'
@@ -24,7 +25,7 @@ function ListIcon({ className }: { className?: string }) {
   )
 }
 
-export function ViewToggle() {
+export const ViewToggle = memo(function ViewToggle() {
   const viewMode = usePatientsStore((s) => s.viewMode)
   const setViewMode = usePatientsStore((s) => s.setViewMode)
 
@@ -70,4 +71,4 @@ export function ViewToggle() {
       </button>
     </div>
   )
-}
+})

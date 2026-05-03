@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { cn } from '@/shared/utils/cn'
 
 export type BadgeStatus = 'Stable' | 'Critical' | 'Recovering' | 'active' | 'critical' | 'stable'
@@ -24,7 +25,7 @@ const label = (s: BadgeStatus) => {
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
 }
 
-export function Badge({ status, className }: BadgeProps) {
+export const Badge = memo(function Badge({ status, className }: BadgeProps) {
   const key = normalized(status) === 'active' ? 'active' : normalized(status)
   const styleKey =
     key === 'stable' || key === 'active'
@@ -44,4 +45,4 @@ export function Badge({ status, className }: BadgeProps) {
       {label(status)}
     </span>
   )
-}
+})
