@@ -6,7 +6,11 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores([
+    'dist',
+    // Cursor/Claude nested worktrees ship their own tsconfig and break project resolution
+    '.claude/**',
+  ]),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
