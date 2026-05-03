@@ -1,62 +1,37 @@
+import { BarChart2, Building2, LayoutDashboard, LogOut, Users } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
+import { useAuth } from '@/features/auth/hooks/useAuth'
+import { useAuthStore } from '@/features/auth/store/authStore'
+import { Button } from '@/shared/components/Button'
 import { cn } from '@/shared/utils/cn'
 
 type SidebarProps = {
   mobileOpen: boolean
-  /** Close mobile drawer after navigation or backdrop tap */
   onCloseMobile?: () => void
 }
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
-    'flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2',
+    'flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2',
     isActive
-      ? 'bg-blue-50 text-blue-800 ring-1 ring-inset ring-blue-100'
-      : 'text-gray-700 hover:bg-gray-100 active:bg-gray-100',
+      ? 'bg-indigo-50 font-semibold text-indigo-600 shadow-sm ring-1 ring-indigo-100/80'
+      : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900',
   )
-
-function DashboardIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M4 13h6V4H4v9zm0 7h6v-5H4v5zm8 0h6v-9h-6v9zm0-18v5h6V2h-6z"
-      />
-    </svg>
-  )
-}
-
-function ChartIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm0 16H5V5h14v14zM7 10h2v7H7v-7zm4-3h2v10h-2V7zm4 6h2v4h-2v-4z"
-      />
-    </svg>
-  )
-}
-
-function UsersIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"
-      />
-    </svg>
-  )
-}
 
 export function Sidebar({ mobileOpen, onCloseMobile }: SidebarProps) {
   const closeIfMobile = () => onCloseMobile?.()
+  const user = useAuthStore((s) => s.user)
+  const { logout } = useAuth()
+
+  const display = user?.displayName ?? user?.email ?? 'Guest'
+  const guest = user?.isAnonymous
 
   return (
     <>
       <div
         className={cn(
-          'fixed inset-0 z-40 bg-gray-900/50 transition-opacity md:hidden',
+          'fixed inset-0 z-40 bg-slate-900/50 transition-opacity md:hidden',
           mobileOpen ? 'opacity-100' : 'pointer-events-none opacity-0',
         )}
         aria-hidden={!mobileOpen}
@@ -67,31 +42,61 @@ export function Sidebar({ mobileOpen, onCloseMobile }: SidebarProps) {
       <aside
         id="app-sidebar"
         className={cn(
-          'fixed inset-y-0 left-0 z-50 flex w-[min(17rem,85vw)] flex-col border-r border-gray-200 bg-white shadow-xl transition-transform duration-200 ease-out md:static md:z-0 md:w-64 md:min-h-screen md:shadow-none',
+          'fixed inset-y-0 left-0 z-50 flex w-[min(15rem,85vw)] flex-col border-r border-slate-200/80 bg-white transition-transform duration-200 ease-out md:static md:z-0 md:w-60 md:min-h-screen md:translate-x-0 md:shadow-none',
+          'max-md:shadow-lg',
           mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
         )}
       >
-        <div className="flex h-14 shrink-0 items-center border-b border-gray-100 px-4 md:h-16">
-          <span className="text-lg font-bold tracking-tight text-gray-900">HealthCare</span>
+        <div className="flex h-16 shrink-0 items-center border-b border-slate-100 px-4">
+          <span className="text-base font-semibold tracking-tight text-slate-900">
+            CarePulse
+            <span className="ml-0.5 text-indigo-600">.</span>
+          </span>
         </div>
 
-        <nav className="flex flex-1 flex-col gap-1 p-3" aria-label="Main navigation">
+        <div className="mx-3 mt-3 rounded-2xl border border-slate-100 bg-slate-50/90 p-3 shadow-sm ring-1 ring-slate-100/60">
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-indigo-100 text-indigo-700">
+              <Building2 size={18} strokeWidth={1.5} aria-hidden />
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-xs font-semibold text-slate-900">Clinical workspace</p>
+              <p className="truncate text-[11px] text-slate-500">
+                {guest ? 'Guest access' : display}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <nav className="mt-2 flex flex-1 flex-col gap-1 p-3" aria-label="Main navigation">
           <NavLink to="/dashboard" end className={linkClass} onClick={closeIfMobile}>
-            <DashboardIcon />
+            <LayoutDashboard size={18} strokeWidth={1.5} aria-hidden />
             Dashboard
           </NavLink>
           <NavLink to="/analytics" className={linkClass} onClick={closeIfMobile}>
-            <ChartIcon />
+            <BarChart2 size={18} strokeWidth={1.5} aria-hidden />
             Analytics
           </NavLink>
           <NavLink to="/patients" className={linkClass} onClick={closeIfMobile}>
-            <UsersIcon />
+            <Users size={18} strokeWidth={1.5} aria-hidden />
             Patients
           </NavLink>
         </nav>
 
-        <div className="border-t border-gray-100 p-3 text-xs leading-relaxed text-gray-500">
-          Signed-in workspace view. Use the top bar to sign out or switch pages anytime.
+        <div className="border-t border-slate-100 p-3">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="w-full justify-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-slate-600 shadow-sm hover:bg-slate-50 hover:text-slate-900"
+            onClick={() => {
+              closeIfMobile()
+              void logout()
+            }}
+          >
+            <LogOut size={16} strokeWidth={1.5} aria-hidden />
+            Sign out
+          </Button>
         </div>
       </aside>
     </>

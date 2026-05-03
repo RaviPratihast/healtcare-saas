@@ -17,7 +17,6 @@ export type DashboardStats = {
   critical: number
   recovering: number
   visitsLast7Days: number
-  /** Share of patients with a visit logged in the rolling window */
   weeklyReachPercent: number
 }
 

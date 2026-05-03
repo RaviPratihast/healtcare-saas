@@ -3,9 +3,6 @@ import { Outlet } from 'react-router-dom'
 import { Sidebar } from '@/shared/components/Sidebar'
 import { Topbar } from '@/shared/components/Topbar'
 
-/**
- * Authenticated app shell: sidebar, top bar, scrollable main region.
- */
 export function Layout() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
@@ -19,7 +16,7 @@ export function Layout() {
   }, [mobileNavOpen])
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-slate-50">
       <Sidebar
         mobileOpen={mobileNavOpen}
         onCloseMobile={() => setMobileNavOpen(false)}
@@ -35,7 +32,7 @@ export function Layout() {
           className="flex-1 overflow-y-auto"
           tabIndex={-1}
         >
-          <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className="mx-auto w-full max-w-[90rem] px-6 py-6">
             <Outlet />
           </div>
         </main>

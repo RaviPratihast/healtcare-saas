@@ -1,3 +1,4 @@
+import { Search, Users } from 'lucide-react'
 import { useMemo } from 'react'
 import { PatientCard } from '@/features/patients/components/PatientCard'
 import { PatientRow } from '@/features/patients/components/PatientRow'
@@ -18,38 +19,42 @@ export default function PatientDetailsPage() {
 
   return (
     <div className="space-y-6">
-      <p className="text-sm text-gray-600">
-        Browse the directory. Search filters by patient name; layout preference is remembered for this
-        session via the patients store.
+      <p className="text-sm text-slate-600">
+        Search filters by patient name; grid or list preference is remembered for this session.
       </p>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex max-w-md flex-1 flex-col gap-1.5">
-          <label htmlFor="patient-search" className="text-sm font-medium text-gray-700">
-            Search by name
-          </label>
+        <div className="relative min-w-0 max-w-md flex-1">
+          <Search
+            size={14}
+            strokeWidth={1.5}
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+            aria-hidden
+          />
           <input
             id="patient-search"
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="e.g. Amelia, Chen, diabetes…"
+            placeholder="Search patients…"
             autoComplete="off"
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-md border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            aria-label="Search patients by name"
           />
         </div>
         <ViewToggle />
       </div>
 
-      <p className="text-xs text-gray-500" aria-live="polite">
+      <p className="text-xs text-slate-500" aria-live="polite">
         Showing {filtered.length} of {patients.length} patients
         {searchQuery.trim() ? ` matching “${searchQuery.trim()}”` : ''}
       </p>
 
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-gray-200 bg-white px-6 py-12 text-center">
-          <p className="text-sm font-medium text-gray-900">No patients match your search</p>
-          <p className="mt-1 text-sm text-gray-500">Try a different name or clear the search field.</p>
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-white py-16 text-center">
+          <Users size={40} strokeWidth={1} className="text-slate-300" aria-hidden />
+          <p className="mt-4 text-sm font-medium text-slate-900">No patients found</p>
+          <p className="mt-1 text-xs text-slate-400">Try adjusting your search or clear the field.</p>
         </div>
       ) : viewMode === 'grid' ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -58,37 +63,61 @@ export default function PatientDetailsPage() {
           ))}
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
-          <table className="min-w-full divide-y divide-gray-200 text-left">
-            <thead className="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
-              <tr>
-                <th scope="col" className="px-4 py-3">
+        <div className="overflow-x-auto rounded-xl border border-slate-200">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 bg-slate-50">
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-slate-400"
+                >
                   Name
                 </th>
-                <th scope="col" className="px-4 py-3">
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-slate-400"
+                >
                   Status
                 </th>
-                <th scope="col" className="px-4 py-3">
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-slate-400"
+                >
                   Condition
                 </th>
-                <th scope="col" className="px-4 py-3">
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-slate-400"
+                >
                   Last visit
                 </th>
-                <th scope="col" className="hidden px-4 py-3 lg:table-cell">
+                <th
+                  scope="col"
+                  className="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-slate-400 lg:table-cell"
+                >
                   Doctor
                 </th>
-                <th scope="col" className="hidden px-4 py-3 md:table-cell">
+                <th
+                  scope="col"
+                  className="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-slate-400 md:table-cell"
+                >
                   Age
                 </th>
-                <th scope="col" className="hidden px-4 py-3 xl:table-cell">
+                <th
+                  scope="col"
+                  className="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-slate-400 xl:table-cell"
+                >
                   Gender
                 </th>
-                <th scope="col" className="hidden px-4 py-3 xl:table-cell">
+                <th
+                  scope="col"
+                  className="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-slate-400 xl:table-cell"
+                >
                   Blood
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 bg-white">
+            <tbody className="divide-y divide-slate-100">
               {filtered.map((patient) => (
                 <PatientRow key={patient.id} patient={patient} />
               ))}

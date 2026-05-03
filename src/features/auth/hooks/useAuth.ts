@@ -17,6 +17,13 @@ import { triggerLoginNotification } from '@/services/notifications'
 
 const googleProvider = new GoogleAuthProvider()
 
+function authErrorCode(err: unknown): string {
+  if (err && typeof err === 'object' && 'code' in err && typeof (err as AuthError).code === 'string') {
+    return (err as AuthError).code
+  }
+  return 'auth/unknown'
+}
+
 function resolveFirebaseError(code: string): string {
   const errors: Record<string, string> = {
     'auth/user-not-found': 'No account found with this email.',
@@ -33,8 +40,23 @@ function resolveFirebaseError(code: string): string {
     'auth/invalid-continue-uri': 'Password reset link is misconfigured. Check Authorized domains in Firebase.',
     'auth/operation-not-allowed':
       'Email/password sign-in is disabled for this project. Enable it in Firebase Console → Authentication → Sign-in method.',
+    'auth/invalid-api-key':
+      'Firebase API key is missing or rejected. Copy the Web API key from Firebase Console → Project settings, put it in `.env` as VITE_FIREBASE_API_KEY, then restart `pnpm dev`. If the key uses restrictions, allow `localhost` (and your dev port) as an HTTP referrer.',
+    'auth/app-not-authorized':
+      'This app is not allowed to use Firebase with this API key. Check Firebase Console → Project settings → Your apps, and ensure you are using the Web app’s config.',
+    'auth/network-request-failed': 'Network error. Check your connection and try again.',
   }
-  return errors[code] ?? 'Something went wrong. Please try again.'
+  if (errors[code]) return errors[code]
+  if (code !== 'auth/unknown') {
+    return `Sign-in failed (${code}). Check Firebase Console → Authentication and your .env values.`
+  }
+  return 'Something went wrong. Please try again.'
+}
+
+function rejectWithAuthMessage(err: unknown): never {
+  const message = resolveFirebaseError(authErrorCode(err))
+  useAuthStore.getState().setError(message)
+  throw new Error(message)
 }
 
 export function useAuth() {
@@ -50,67 +72,55 @@ export function useAuth() {
   }, [setUser, setLoading])
 
   async function login(email: string, password: string) {
-    setLoading(true)
     setError(null)
     try {
       const result = await signInWithEmailAndPassword(auth, email, password)
-      await triggerLoginNotification(result.user.email ?? 'User')
+      setUser(result.user)
       navigate('/dashboard')
+      void triggerLoginNotification(result.user.email ?? 'User')
     } catch (err) {
-      setError(resolveFirebaseError((err as AuthError).code))
-    } finally {
-      setLoading(false)
+      rejectWithAuthMessage(err)
     }
   }
 
   async function register(email: string, password: string) {
-    setLoading(true)
     setError(null)
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password)
-      await triggerLoginNotification(result.user.email ?? 'User')
+      setUser(result.user)
       navigate('/dashboard')
+      void triggerLoginNotification(result.user.email ?? 'User')
     } catch (err) {
-      setError(resolveFirebaseError((err as AuthError).code))
-    } finally {
-      setLoading(false)
+      rejectWithAuthMessage(err)
     }
   }
 
   async function googleLogin() {
-    setLoading(true)
     setError(null)
     try {
       const result = await signInWithPopup(auth, googleProvider)
-      await triggerLoginNotification(
+      setUser(result.user)
+      navigate('/dashboard')
+      void triggerLoginNotification(
         result.user.displayName ?? result.user.email ?? 'User',
       )
-      navigate('/dashboard')
     } catch (err) {
-      setError(resolveFirebaseError((err as AuthError).code))
-    } finally {
-      setLoading(false)
+      rejectWithAuthMessage(err)
     }
   }
 
   async function guestLogin() {
-    setLoading(true)
     setError(null)
     try {
-      await signInAnonymously(auth)
-      await triggerLoginNotification('Guest')
+      const result = await signInAnonymously(auth)
+      setUser(result.user)
       navigate('/dashboard')
+      void triggerLoginNotification('Guest')
     } catch (err) {
-      setError(resolveFirebaseError((err as AuthError).code))
-    } finally {
-      setLoading(false)
+      rejectWithAuthMessage(err)
     }
   }
 
-  /**
-   * Password reset: does not toggle global `isLoading` so the sign-in form stays usable.
-   * Uses a continue URL so Identity Toolkit requests match Firebase authorized domains.
-   */
   async function forgotPassword(
     email: string,
   ): Promise<{ ok: true } | { ok: false; message: string }> {
@@ -128,18 +138,18 @@ export function useAuth() {
       await sendPasswordResetEmail(auth, trimmed, actionCodeSettings)
       return { ok: true }
     } catch (err) {
-      const code = (err as AuthError).code
-      // Match Firebase’s anti-enumeration behavior: same outcome as “email sent”
+      const code = authErrorCode(err)
       if (code === 'auth/user-not-found') {
         return { ok: true }
       }
-      return { ok: false, message: resolveFirebaseError(code || 'unknown') }
+      return { ok: false, message: resolveFirebaseError(code) }
     }
   }
 
   async function logout() {
     await signOut(auth)
     setUser(null)
+    useAuthStore.getState().bumpLoginFormNonce()
     navigate('/login')
   }
 

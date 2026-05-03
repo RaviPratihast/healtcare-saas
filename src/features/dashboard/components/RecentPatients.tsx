@@ -1,3 +1,4 @@
+import { ChevronRight } from 'lucide-react'
 import { memo, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import type { Patient } from '@/features/patients/types/patient'
@@ -23,6 +24,12 @@ function formatVisit(iso: string) {
   }
 }
 
+function initials(name: string) {
+  const p = name.trim().split(/\s+/)
+  if (p.length >= 2) return (p[0]![0]! + p[p.length - 1]![0]!).toUpperCase()
+  return name.slice(0, 2).toUpperCase()
+}
+
 type RecentPatientsProps = {
   patients: Patient[]
   className?: string
@@ -41,78 +48,83 @@ export const RecentPatients = memo(function RecentPatients({
   return (
     <section
       className={cn(
-        'overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm',
+        'overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm ring-1 ring-slate-100/80',
         className,
       )}
     >
-      <div className="flex flex-col gap-3 border-b border-gray-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 border-b border-slate-100 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-base font-semibold text-gray-900">Recent patient activity</h2>
-          <p className="mt-0.5 text-sm text-gray-500">
-            Latest {RECENT_COUNT} updates by visit date. Open the directory for full search and
-            filters.
+          <h2 className="flex items-center gap-2 text-base font-semibold text-slate-900">
+            Recent patient activity
+            <span className="inline-block size-1.5 rounded-full bg-indigo-500" aria-hidden />
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Latest {RECENT_COUNT} updates by visit date - open the directory for full search.
           </p>
         </div>
         <Link
           to="/patients"
-          className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-800 shadow-sm transition-colors hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          className="inline-flex shrink-0 items-center gap-1 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-700 shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
         >
           View all patients
+          <ChevronRight size={14} strokeWidth={1.5} className="text-slate-400" aria-hidden />
         </Link>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-100 text-left text-sm">
-          <thead className="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
-            <tr>
-              <th scope="col" className="px-5 py-3">
-                Patient
-              </th>
-              <th scope="col" className="px-5 py-3">
-                Condition
-              </th>
-              <th scope="col" className="px-5 py-3">
-                Status
-              </th>
-              <th scope="col" className="px-5 py-3">
-                Last visit
-              </th>
-              <th scope="col" className="hidden px-5 py-3 lg:table-cell">
-                Doctor
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100 bg-white">
-            {recent.map((patient) => (
-              <tr
-                key={patient.id}
-                className="transition-colors hover:bg-gray-50/90"
-              >
-                <td className="px-5 py-3">
-                  <Link
-                    to="/patients"
-                    className="cursor-pointer font-medium text-blue-600 hover:text-blue-800 hover:underline"
-                  >
-                    {patient.name}
-                  </Link>
-                </td>
-                <td className="max-w-xs truncate px-5 py-3 text-gray-600" title={patient.condition}>
-                  {patient.condition}
-                </td>
-                <td className="px-5 py-3">
+      <ul className="divide-y divide-slate-100">
+        {recent.map((patient) => (
+          <li key={patient.id}>
+            <Link
+              to="/patients"
+              className="block px-6 py-4 transition-colors hover:bg-slate-50/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500"
+            >
+              <div className="flex items-center gap-4">
+                <div
+                  className="flex size-11 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-semibold text-indigo-800 ring-2 ring-white"
+                  aria-hidden
+                >
+                  {initials(patient.name)}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-slate-900">{patient.name}</p>
+                  <p className="mt-0.5 truncate text-xs text-slate-500">
+                    {patient.condition}
+                    <span className="text-slate-400"> · </span>
+                    {patient.doctor}
+                  </p>
+                </div>
+                <div className="hidden shrink-0 items-center gap-4 sm:flex">
                   <Badge status={patient.status} />
-                </td>
-                <td className="whitespace-nowrap px-5 py-3 text-gray-600">
+                  <div className="flex flex-col items-end">
+                    <time
+                      className="text-xs tabular-nums text-slate-600"
+                      dateTime={patient.lastVisit}
+                    >
+                      {formatVisit(patient.lastVisit)}
+                    </time>
+                    <span className="text-[10px] font-medium uppercase tracking-wide text-slate-400">
+                      Last visit
+                    </span>
+                  </div>
+                  <ChevronRight size={18} strokeWidth={1.5} className="text-slate-300" aria-hidden />
+                </div>
+                <ChevronRight
+                  size={18}
+                  strokeWidth={1.5}
+                  className="shrink-0 text-slate-300 sm:hidden"
+                  aria-hidden
+                />
+              </div>
+              <div className="mt-3 flex items-center justify-between sm:hidden">
+                <Badge status={patient.status} />
+                <time className="text-xs tabular-nums text-slate-500" dateTime={patient.lastVisit}>
                   {formatVisit(patient.lastVisit)}
-                </td>
-                <td className="hidden whitespace-nowrap px-5 py-3 text-gray-600 lg:table-cell">
-                  {patient.doctor}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                </time>
+              </div>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </section>
   )
 })

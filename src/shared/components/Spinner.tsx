@@ -4,6 +4,7 @@ type SpinnerProps = {
   className?: string
   label?: string
   size?: 'sm' | 'md' | 'lg'
+  tone?: 'default' | 'inverse'
 }
 
 const sizeMap = {
@@ -12,7 +13,17 @@ const sizeMap = {
   lg: 'size-10 border-[3px]',
 }
 
-export function Spinner({ className, label = 'Loading', size = 'md' }: SpinnerProps) {
+const toneMap = {
+  default: 'border-indigo-600 border-t-transparent',
+  inverse: 'border-white/35 border-t-white',
+}
+
+export function Spinner({
+  className,
+  label = 'Loading',
+  size = 'md',
+  tone = 'default',
+}: SpinnerProps) {
   return (
     <span
       className={cn('inline-flex items-center justify-center', className)}
@@ -20,10 +31,7 @@ export function Spinner({ className, label = 'Loading', size = 'md' }: SpinnerPr
       aria-label={label}
     >
       <span
-        className={cn(
-          'animate-spin rounded-full border-blue-600 border-t-transparent',
-          sizeMap[size],
-        )}
+        className={cn('animate-spin rounded-full', toneMap[tone], sizeMap[size])}
       />
     </span>
   )

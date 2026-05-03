@@ -5,7 +5,6 @@ export type CardProps = HTMLAttributes<HTMLDivElement> & {
   title?: string
   description?: string
   children: ReactNode
-  /** Extra padding / prose for main surfaces */
   padded?: boolean
 }
 
@@ -20,7 +19,7 @@ export function Card({
   return (
     <div
       className={cn(
-        'rounded-xl border border-gray-200 bg-white shadow-sm',
+        'rounded-2xl border border-slate-100 bg-white shadow-sm ring-1 ring-slate-100/80',
         padded && 'p-5',
         className,
       )}
@@ -28,8 +27,8 @@ export function Card({
     >
       {(title || description) && (
         <div className={cn(padded && 'mb-4')}>
-          {title && <h2 className="text-base font-semibold text-gray-900">{title}</h2>}
-          {description && <p className="mt-1 text-sm text-gray-500">{description}</p>}
+          {title && <h2 className="text-base font-semibold text-slate-900">{title}</h2>}
+          {description && <p className="mt-1 text-sm text-slate-500">{description}</p>}
         </div>
       )}
       {children}

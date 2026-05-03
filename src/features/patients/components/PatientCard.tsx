@@ -25,27 +25,22 @@ export const PatientCard = memo(function PatientCard({ patient, className }: Pat
   return (
     <article
       className={cn(
-        'flex flex-col rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md',
+        'flex flex-col rounded-xl border border-slate-200 bg-white p-5',
         className,
       )}
     >
       <div className="flex items-start justify-between gap-2">
-        <h3 className="font-semibold text-gray-900">{patient.name}</h3>
+        <h3 className="font-semibold text-slate-900">{patient.name}</h3>
         <Badge status={patient.status} />
       </div>
-      <p className="mt-2 text-sm text-gray-600">{patient.condition}</p>
-      <dl className="mt-3 space-y-1 text-xs text-gray-500">
-        <div className="flex justify-between gap-2">
-          <dt className="text-gray-400">Last visit</dt>
-          <dd className="font-medium text-gray-700">{formatVisit(patient.lastVisit)}</dd>
-        </div>
-        <div className="flex justify-between gap-2">
-          <dt className="text-gray-400">Doctor</dt>
-          <dd className="truncate text-gray-700" title={patient.doctor}>
-            {patient.doctor}
-          </dd>
-        </div>
-      </dl>
+      <p className="mt-1 text-sm text-slate-500">
+        {patient.age} · {patient.gender}
+      </p>
+      <p className="mt-2 text-sm text-slate-700">{patient.condition}</p>
+      <p className="mt-3 text-xs text-slate-400">
+        Last visit{' '}
+        <span className="font-medium tabular-nums text-slate-600">{formatVisit(patient.lastVisit)}</span>
+      </p>
     </article>
   )
 })

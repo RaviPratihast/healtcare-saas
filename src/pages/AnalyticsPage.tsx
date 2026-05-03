@@ -2,30 +2,35 @@ import {
   AdmissionsLineChartPanel,
   ConditionBarChartPanel,
   StatusDistributionChart,
-} from '@/features/analytics/components/AnalyticsChartPanels'
-import { useAnalyticsChartData } from '@/features/analytics/hooks/useAnalyticsChartData'
-import { usePatientsStore } from '@/features/patients/store/patientsStore'
-import { Card } from '@/shared/components/Card'
+} from "@/features/analytics/components/AnalyticsChartPanels";
+import { useAnalyticsChartData } from "@/features/analytics/hooks/useAnalyticsChartData";
+import { usePatientsStore } from "@/features/patients/store/patientsStore";
+import { Card } from "@/shared/components/Card";
 
 export default function AnalyticsPage() {
-  const patients = usePatientsStore((s) => s.patients)
-  const { statusData, monthlyData, conditionData } = useAnalyticsChartData(patients)
+  const patients = usePatientsStore((s) => s.patients);
+  const { statusData, monthlyData, conditionData } =
+    useAnalyticsChartData(patients);
 
-  const hasPatients = patients.length > 0
+  const hasPatients = patients.length > 0;
 
   return (
     <div className="space-y-6">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight text-gray-900 md:text-3xl">Analytics</h1>
-        <p className="max-w-3xl text-sm leading-relaxed text-gray-600 md:text-base">
-          Operational insight derived from your patient directory. Charts update when store data
-          changes — same source as Dashboard and Patients.
+      <header>
+        <p className="max-w-3xl text-sm leading-relaxed text-slate-600">
+          Operational insight from your patient directory. Charts update when
+          store data changes - same source as Dashboard and Patients.
         </p>
       </header>
 
       {!hasPatients ? (
-        <Card title="No data yet" description="Add patients to the store to see charts.">
-          <p className="text-sm text-gray-600">The analytics views need at least one patient row.</p>
+        <Card
+          title="No data yet"
+          description="Add patients to the store to see charts."
+        >
+          <p className="text-sm text-slate-600">
+            The analytics views need at least one patient row.
+          </p>
         </Card>
       ) : (
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
@@ -55,5 +60,5 @@ export default function AnalyticsPage() {
         </div>
       )}
     </div>
-  )
+  );
 }
