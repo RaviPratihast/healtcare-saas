@@ -21,25 +21,30 @@ function formatVisit(isoDate: string) {
 
 export const PatientRow = memo(function PatientRow({ patient }: PatientRowProps) {
   return (
-    <tr className="border-b border-gray-100 transition-colors hover:bg-gray-50/80">
-      <th scope="row" className="whitespace-nowrap px-4 py-3 text-left text-sm font-medium text-gray-900">
+    <tr className="transition-colors hover:bg-slate-50">
+      <th
+        scope="row"
+        className="whitespace-nowrap px-4 py-3 text-left text-sm font-medium text-slate-900"
+      >
         {patient.name}
       </th>
       <td className="px-4 py-3">
         <Badge status={patient.status} />
       </td>
-      <td className="max-w-48 truncate px-4 py-3 text-sm text-gray-600" title={patient.condition}>
+      <td className="max-w-48 truncate px-4 py-3 text-sm text-slate-600" title={patient.condition}>
         {patient.condition}
       </td>
-      <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-600">{formatVisit(patient.lastVisit)}</td>
-      <td className="hidden px-4 py-3 text-sm text-gray-600 lg:table-cell">{patient.doctor}</td>
-      <td className="hidden whitespace-nowrap px-4 py-3 text-sm text-gray-600 md:table-cell">
+      <td className="whitespace-nowrap px-4 py-3 text-sm tabular-nums text-slate-600">
+        {formatVisit(patient.lastVisit)}
+      </td>
+      <td className="hidden px-4 py-3 text-sm text-slate-600 lg:table-cell">{patient.doctor}</td>
+      <td className="hidden whitespace-nowrap px-4 py-3 text-sm tabular-nums text-slate-600 md:table-cell">
         {patient.age}
       </td>
-      <td className="hidden whitespace-nowrap px-4 py-3 text-sm text-gray-600 xl:table-cell">
+      <td className="hidden whitespace-nowrap px-4 py-3 text-sm text-slate-600 xl:table-cell">
         {patient.gender}
       </td>
-      <td className="hidden whitespace-nowrap px-4 py-3 text-sm text-gray-600 xl:table-cell">
+      <td className="hidden whitespace-nowrap px-4 py-3 text-sm text-slate-600 xl:table-cell">
         {patient.bloodGroup}
       </td>
     </tr>

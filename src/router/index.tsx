@@ -1,6 +1,3 @@
-/**
- * Route-level code splitting: every page is `lazy()`-loaded so chunks download on first navigation.
- */
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { useAuth } from '@/features/auth/hooks/useAuth'
@@ -17,7 +14,7 @@ const PatientDetailsPage = lazy(() => import('@/pages/PatientDetailsPage'))
 
 function PageSpinner() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50">
       <Spinner size="lg" label="Loading page" />
     </div>
   )
@@ -25,15 +22,12 @@ function PageSpinner() {
 
 function AuthSpinner() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50">
       <Spinner size="lg" label="Restoring session" />
     </div>
   )
 }
 
-/**
- * Auth gate + app shell. Renders `Layout` (sidebar, topbar, `Outlet`) when signed in.
- */
 function ProtectedLayout() {
   const user = useAuthStore((state) => state.user)
   const isLoading = useAuthStore((state) => state.isLoading)
@@ -43,7 +37,6 @@ function ProtectedLayout() {
   return <Layout />
 }
 
-/** Subscribes to Firebase auth so `isLoading` clears before LoginPage gates on it. */
 function AuthStateSync() {
   useAuth()
   return null

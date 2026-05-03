@@ -10,7 +10,6 @@ function monthKeyFromIso(iso: string): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
 }
 
-/** Last N calendar months (including current), labeled for charts */
 function rollingMonths(count: number): { key: string; label: string }[] {
   const out: { key: string; label: string }[] = []
   const now = new Date()
